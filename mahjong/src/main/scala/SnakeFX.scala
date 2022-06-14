@@ -16,16 +16,19 @@ import scalafx.scene.layout.{BorderPane, HBox}
 import scala.io.Source
 
 
+
 object SnakeFX extends JFXApp3 {
+  var curr: Int = -1;
+  private var currTile: ImageView = null;
   override def start(): Unit = {
 
-    val fileLines = Source.fromFile("src/main/scala/Map1.txt").getLines.toList
-    val arr = fileLines.filterNot(_.isEmpty).map {
-      line => (line.toList).filter(e => e != ' ') }.toArray
-    println(arr.mkString(",\n"))
-    println(arr(0))
-
-    println(arr(0))
+//    val fileLines = Source.fromFile("src/main/scala/Map1.txt").getLines.toList
+//    val arr = fileLines.filterNot(_.isEmpty).map {
+//      line => (line.toList).filter(e => e != ' ') }.toArray
+//    println(arr.mkString(",\n"))
+//    println(arr(0))
+//
+//    println(arr(0))
     stage = new JFXApp3.PrimaryStage {
       title = "Mahjong"
       width = 900
@@ -36,7 +39,7 @@ object SnakeFX extends JFXApp3 {
     }
   }
 
-  def pyramid(x: Double, y: Double, nx: Int =3, ny: Int=3): Seq[ImageView] =
+  def pyramid(x: Double, y: Double, nx: Int = 3, ny: Int = 3): Seq[ImageView] =
     for(i <- 0 until nx;
         j <- 0 until ny)
     yield tileImage(x + i * 46, y + j * 62, 1)
@@ -50,8 +53,18 @@ object SnakeFX extends JFXApp3 {
     var count = img
     image = new Image(s"file:src/main/scala/mahjong_tiles/tiles-${getNumber(img)}-00.png")
     onMouseClicked = () => {
-      shadow = 1 - shadow
-      image = new Image(s"file:src/main/scala/mahjong_tiles/tiles-${getNumber(img)}-${switchShadow(shadow)}.png")
+      if (curr == img && currTile != this) {
+        currTile.image = null
+        image = null
+        curr = -1
+        currTile = null
+      } else {
+        shadow = 1 - shadow
+        image = new Image(s"file:src/main/scala/mahjong_tiles/tiles-${getNumber(img)}-${switchShadow(shadow)}.png")
+        currTile = this
+        curr = img
+        println(curr)
+      }
     }
   }
 
