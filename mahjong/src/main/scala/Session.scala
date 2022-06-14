@@ -11,7 +11,7 @@ class Session {
 
     isStarted = true
 
-    val game = new Game()
+    //val game = new Game()
 
     //todo: game XD
   }
