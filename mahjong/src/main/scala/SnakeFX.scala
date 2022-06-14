@@ -13,34 +13,33 @@ import scalafx.scene.image.{Image, ImageView}
 import scalafx.scene.input.MouseEvent
 import scalafx.scene.layout.{BorderPane, HBox}
 
+import scala.io.Source
+
 
 object SnakeFX extends JFXApp3 {
   override def start(): Unit = {
+
+    val fileLines = Source.fromFile("src/main/scala/Map1.txt").getLines.toList
+    val arr = fileLines.filterNot(_.isEmpty).map {
+      line => (line.toList).filter(e => e != ' ') }.toArray
+    println(arr.mkString(",\n"))
+    println(arr(0))
+
+    println(arr(0))
     stage = new JFXApp3.PrimaryStage {
       title = "Mahjong"
       width = 900
       height = 700
       scene = new Scene(900, 700) {
-
-
-        content = pyramid(0, 0) ++ pyramid(200, 0) ++ pyramid(0, 300) ++ pyramid(200, 300)
-
-
-
+        content = pyramid(0, 0) ++ pyramid(200, 0) ++ pyramid(0, 300) ++ pyramid(200, 300) ++ pyramid(26, 32, 2, 2)
       }
     }
   }
 
-  def pyramid(x: Double, y: Double): Seq[ImageView] =
-    for(i <- 0 until 3;
-        j <- 0 until 3)
-//    yield square(x + i * 50, y + j * 50, Red)
-    yield tileImage(x + i * 50, y + j * 60, 1)
-
-  private def longStrip(x: Double, y: Double): Seq[Rectangle] =
-    for (i <- 0 until 5;
-         j <- 0 until 2)
-      yield square(x + i * 50, y + j * 60, Green)
+  def pyramid(x: Double, y: Double, nx: Int =3, ny: Int=3): Seq[ImageView] =
+    for(i <- 0 until nx;
+        j <- 0 until ny)
+    yield tileImage(x + i * 46, y + j * 62, 1)
 
 
   def tileImage(xr: Double, yr: Double, img: Int) = new ImageView {
@@ -49,7 +48,7 @@ object SnakeFX extends JFXApp3 {
     private val img: Int = img
     private var shadow = 0
     var count = img
-    image = new Image(s"file:src/main/scala/mahjong_tiles/tiles-${getNumber(img)}-${switchShadow(shadow)}.png")
+    image = new Image(s"file:src/main/scala/mahjong_tiles/tiles-${getNumber(img)}-00.png")
     onMouseClicked = () => {
       shadow = 1 - shadow
       image = new Image(s"file:src/main/scala/mahjong_tiles/tiles-${getNumber(img)}-${switchShadow(shadow)}.png")
