@@ -17,12 +17,14 @@ class TilesHandler(val numberOfTiles: Int) {
       for (xd <- x until x + 2) {
         for (yd <- y until y + 2) {
           if (arrayOfTiles(xd)(yd)(z + 1) > 0) {
+            println("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
             return false
+
           }
         }
       }
     }
-
+    println("BBBBBBBBBBBBBBBBBBBBBBBBBBB")
     if (y != 0) {
       for (xd <- x until x + 2) {
         if (arrayOfTiles(xd)(y - 1)(z) > 0) {
@@ -55,8 +57,18 @@ class TilesHandler(val numberOfTiles: Int) {
     for (xd <- x until x + 2) {
       for (yd <- y until y + 2) {
         arrayOfTiles(xd)(yd)(z) = 0
+
       }
     }
+//    for (zd <- 0 until 3) {
+//      for (xd <- 0 until 20) {
+//        for (yd <- 0 until 14) {
+//          print(arrayOfTiles(xd)(yd)(zd))
+//        }
+//        println(" ")
+//      }
+//      println(" ")
+//    }
   }
 
   def getRandomTypes: Array[Int] = {
@@ -84,10 +96,10 @@ class TilesHandler(val numberOfTiles: Int) {
 
   def createArrayOfTiles: Array[Array[Array[Int]]] = {
     var array = ofDim[Int](20,14, 3)
-    val fileLines = Source.fromFile("src/main/scala/Map1.txt").getLines.toList
+    val fileLines = Source.fromFile("mahjong/src/main/scala/Map1.txt").getLines.toList
     val arr = fileLines.filterNot(_.isEmpty).map {
       line => (line.toList).filter(e => e != ' ') }.toArray
-    println(arr.mkString("Array(", ", ", ")"))
+//    println(arr.mkString("Array(", ", ", ")"))
 
     for (x <- 0 until 20) {
       val line = arr(x)
@@ -129,5 +141,21 @@ class TilesHandler(val numberOfTiles: Int) {
     } else {
       -1
     }
+  }
+
+  def eleganckiPrzypadek(counter: Int): Int = {
+      var res = counter
+
+      if (tilesUsage.contains(counter)) {
+        val temp = tilesUsage(counter) + 1
+        tilesUsage -= counter
+        tilesUsage += (counter -> temp)
+        currentlyUsedTiles += 1
+      } else {
+        tilesUsage += (counter -> 1)
+        currentlyUsedTiles += 1
+      }
+
+      res
   }
 }

@@ -20,6 +20,10 @@ import scala.util.Random
 object SnakeFX extends JFXApp3 {
   var curr: Int = -1;
   private var currTile: ImageView = null;
+  var curr_x = -1
+  var curr_y = -1
+  var curr_lvl = -1
+  var counter = 1
 
   val xOffset: Double = 175
   val yOffset: Double = 140
@@ -34,7 +38,7 @@ object SnakeFX extends JFXApp3 {
       title = "Mahjong"
       width = 700
       height = 900
-      val backGround = new ImageView("file:src/main/scala/background.png")
+      val backGround = new ImageView("file:mahjong/src/main/scala/background.png")
 
       backGround.setFitWidth(700)
       backGround.setFitHeight(900)
@@ -45,32 +49,32 @@ object SnakeFX extends JFXApp3 {
           pyramid(4,   7) ++
           pyramid(4,   0) ++
           pyramid(4.5, 0.5, 2, 2, 1) ++
-          pyramid(0.5, 0.5, 2, 2, 1) ++
-          pyramid(0.5, 0.5, 2, 2, 1) ++
-          pyramid(0.5, 7.5, 2, 2, 1) ++
+          pyramid(0.5, 0.5, 2, 2, 1, 10) ++
+          pyramid(0.5, 7.5, 2, 2, 1, 10) ++
           pyramid(4.5, 7.5, 2, 2, 1) ++
-          List(tileImage(1, 1, tilesHandler.getRandomTile),
-            tileImage(5, 1, 1, 2),
-            tileImage(1, 8, tilesHandler.getRandomTile),
-            tileImage(5, 8, 1, 2),
-            tileImage(0, 4.5, tilesHandler.getRandomTile),
-            tileImage(6, 4.5, tilesHandler.getRandomTile)) ++
+          pyramid(1, 1,1,1,2) ++
+          pyramid(5, 1,1,1,2) ++
+          pyramid(1, 8,1,1,2) ++
+          pyramid(5, 8,1,1,2) ++
+          List(
+            tileImage(0, 4.5, tilesHandler.eleganckiPrzypadek(40)),
+            tileImage(6, 4.5, tilesHandler.eleganckiPrzypadek(40))) ++
           stripe()
 
       }
     }
   }
 
-  def pyramid(x: Double, y: Double, nx: Int = 3, ny: Int = 3, level:Int = 0): Seq[ImageView] =
+  def pyramid(x: Double, y: Double, nx: Int = 3, ny: Int = 3, level:Int = 0, magic: Int = 1): Seq[ImageView] =
     for(i <- 0 until nx;
         j <- 0 until ny)
-    yield tileImage(x + i, y + j, tilesHandler.getRandomTile, level)
+    yield tileImage(x + i, y + j, tilesHandler.eleganckiPrzypadek((i*3 + j) + magic), level)
 
 
   def stripe(): Seq[ImageView] =
     for (i <- 0 until 5;
          j <- 0 until 2)
-    yield tileImage(i+1, 4 + j, 1) // tilesHandler.getRandomTile
+    yield tileImage(i+1, 4 + j, tilesHandler.eleganckiPrzypadek(i * 5)) // tilesHandler.getRandomTile
 
 
   def tileImage(xr: Double, yr: Double, img_id: Int, level: Int = 0) = new ImageView {
@@ -81,20 +85,24 @@ object SnakeFX extends JFXApp3 {
     val lvl = level
     val img = img_id
     private var shadow = 0
-    image = new Image(s"file:src/main/scala/mahjong_tiles/tiles-${getNumber(img)}-00.png")
+    image = new Image(s"file:mahjong/src/main/scala/mahjong_tiles/tiles-${getNumber(img)}-00.png")
     onMouseClicked = () => {
-      println(s"$x_id   $y_id    $lvl")
-      if (curr == img && currTile != this && tilesHandler.checkIfTileIsFree(x_id, y_id, lvl)) {
+      println(s"$y_id   $x_id    $lvl")
+      if (curr == img && !currTile.equals(this) && tilesHandler.checkIfTileIsFree(y_id, x_id, lvl)) {
         currTile.image = null
         image = null
         curr = -1
         currTile = null
-        tilesHandler.deleteTile(x_id, y_id, level, img)
+        tilesHandler.deleteTile(y_id, x_id, level, img)
+        tilesHandler.deleteTile(curr_y, curr_x, curr_lvl, img)
       } else {
         shadow = 1 - shadow
-        image = new Image(s"file:src/main/scala/mahjong_tiles/tiles-${getNumber(img)}-${switchShadow(shadow)}.png")
+        image = new Image(s"file:mahjong/src/main/scala/mahjong_tiles/tiles-${getNumber(img)}-${switchShadow(shadow)}.png")
         currTile = this
         curr = img
+        curr_x = x_id
+        curr_y = y_id
+        curr_lvl = lvl
       }
     }
   }
@@ -107,13 +115,4 @@ object SnakeFX extends JFXApp3 {
     if (shadow == 0) "00" else "01"
   }
 
-
-//  def square(xr: Double, yr: Double, color: Color) = new Rectangle {
-//    x = xr
-//    y = yr
-//    width = 48
-//    height = 48
-//    fill = color
-//    onMouseClicked = () => println(s"Clicked $xr $yr")
-//  }
 }
