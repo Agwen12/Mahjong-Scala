@@ -84,7 +84,7 @@ class TilesHandler(val numberOfTiles: Int) {
 
   def createArrayOfTiles: Array[Array[Array[Int]]] = {
     var array = ofDim[Int](20,14, 3)
-    val fileLines = Source.fromFile("mahjong/src/main/scala/Map1.txt").getLines.toList
+    val fileLines = Source.fromFile("src/main/scala/Map1.txt").getLines.toList
     val arr = fileLines.filterNot(_.isEmpty).map {
       line => (line.toList).filter(e => e != ' ') }.toArray
     println(arr.mkString("Array(", ", ", ")"))
