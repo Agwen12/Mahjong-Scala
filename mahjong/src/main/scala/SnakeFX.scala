@@ -1,4 +1,5 @@
 
+import javafx.scene.image
 import scalafx.application.{JFXApp3, Platform}
 import scalafx.event.ActionEvent
 import scalafx.scene.Scene
@@ -8,33 +9,46 @@ import scalafx.scene.paint.Color
 import scalafx.scene.paint.Color._
 import scalafx.scene.shape.{Box, Rectangle}
 import scalafx.Includes._
+import scalafx.beans.property.ObjectProperty
 import scalafx.event.ActionEvent
 import scalafx.scene.image.{Image, ImageView}
 import scalafx.scene.input.MouseEvent
 import scalafx.scene.layout.{BorderPane, HBox}
 
 import scala.io.Source
+import scala.util.Random
 
 
 
 object SnakeFX extends JFXApp3 {
   var curr: Int = -1;
   private var currTile: ImageView = null;
+
+  val xOffset: Double = 175
+  val yOffset: Double = 140
+  val rand: Random.type = Random
+
   override def start(): Unit = {
 
-//    val fileLines = Source.fromFile("src/main/scala/Map1.txt").getLines.toList
-//    val arr = fileLines.filterNot(_.isEmpty).map {
-//      line => (line.toList).filter(e => e != ' ') }.toArray
-//    println(arr.mkString(",\n"))
-//    println(arr(0))
-//
-//    println(arr(0))
     stage = new JFXApp3.PrimaryStage {
       title = "Mahjong"
-      width = 900
-      height = 700
-      scene = new Scene(900, 700) {
-        content = pyramid(0, 0) ++ pyramid(200, 0) ++ pyramid(0, 300) ++ pyramid(200, 300) ++ pyramid(26, 32, 2, 2)
+      width = 700
+      height = 900
+      val backGround = new ImageView("file:src/main/scala/background.png")
+
+      backGround.setFitWidth(700)
+      backGround.setFitHeight(900)
+      scene = new Scene(700, 900) {
+        content = List(backGround) ++
+          pyramid(xOffset, yOffset) ++ pyramid(xOffset + 184, yOffset) ++ pyramid(xOffset + 210, yOffset + 32, 2, 2) ++
+          pyramid(xOffset , yOffset + 434) ++ pyramid(xOffset + 184, yOffset + 434) ++ pyramid(xOffset + 26, yOffset + 32, 2, 2) ++
+          pyramid(xOffset + 26, yOffset + 32, 2, 2) ++ pyramid(xOffset + 26, yOffset + 465, 2, 2) ++
+          pyramid(xOffset + 210, yOffset + 465, 2, 2) ++
+          List(tileImage(xOffset + 50, yOffset + 62, 2), tileImage(xOffset + 235, yOffset + 62, rand.nextInt(41)),
+               tileImage(xOffset + 50, yOffset + 495, rand.nextInt(41)), tileImage(xOffset + 235, yOffset + 495, rand.nextInt(41)),
+               tileImage(xOffset, yOffset + 62*4+31, rand.nextInt(41)), tileImage(xOffset + 276, yOffset + 62*4+31, rand.nextInt(41))) ++
+          stripe()
+
       }
     }
   }
@@ -42,15 +56,20 @@ object SnakeFX extends JFXApp3 {
   def pyramid(x: Double, y: Double, nx: Int = 3, ny: Int = 3): Seq[ImageView] =
     for(i <- 0 until nx;
         j <- 0 until ny)
-    yield tileImage(x + i * 46, y + j * 62, 1)
+      yield tileImage(x + i * 46, y + j * 62, rand.nextInt(41))
 
 
-  def tileImage(xr: Double, yr: Double, img: Int) = new ImageView {
+  def stripe(): Seq[ImageView] =
+    for (i <- 0 until 5;
+         j <- 0 until 2)
+      yield tileImage(xOffset + 46 * (i+1), yOffset + 62*(4 + j), rand.nextInt(41))
+
+
+  def tileImage(xr: Double, yr: Double, img_id: Int) = new ImageView {
     x = xr
     y = yr
-    private val img: Int = img
+    val img = img_id
     private var shadow = 0
-    var count = img
     image = new Image(s"file:src/main/scala/mahjong_tiles/tiles-${getNumber(img)}-00.png")
     onMouseClicked = () => {
       if (curr == img && currTile != this) {
@@ -63,7 +82,6 @@ object SnakeFX extends JFXApp3 {
         image = new Image(s"file:src/main/scala/mahjong_tiles/tiles-${getNumber(img)}-${switchShadow(shadow)}.png")
         currTile = this
         curr = img
-        println(curr)
       }
     }
   }
