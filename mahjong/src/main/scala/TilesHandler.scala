@@ -108,6 +108,7 @@ class TilesHandler(val numberOfTiles: Int) {
     array
   }
 
+//  def getRandomTile: Int = 2
   def getRandomTile: Int = {
     if (currentlyUsedTiles < 2 * numberOfTiles) {
       val r = scala.util.Random

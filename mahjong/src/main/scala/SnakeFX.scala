@@ -50,9 +50,9 @@ object SnakeFX extends JFXApp3 {
           pyramid(0.5, 7.5, 2, 2, 1) ++
           pyramid(4.5, 7.5, 2, 2, 1) ++
           List(tileImage(1, 1, tilesHandler.getRandomTile),
-            tileImage(5, 1, tilesHandler.getRandomTile),
+            tileImage(5, 1, 1, 2),
             tileImage(1, 8, tilesHandler.getRandomTile),
-            tileImage(5, 8, tilesHandler.getRandomTile),
+            tileImage(5, 8, 1, 2),
             tileImage(0, 4.5, tilesHandler.getRandomTile),
             tileImage(6, 4.5, tilesHandler.getRandomTile)) ++
           stripe()
@@ -70,7 +70,7 @@ object SnakeFX extends JFXApp3 {
   def stripe(): Seq[ImageView] =
     for (i <- 0 until 5;
          j <- 0 until 2)
-    yield tileImage(i+1, 4 + j, tilesHandler.getRandomTile)
+    yield tileImage(i+1, 4 + j, 1) // tilesHandler.getRandomTile
 
 
   def tileImage(xr: Double, yr: Double, img_id: Int, level: Int = 0) = new ImageView {
@@ -83,7 +83,8 @@ object SnakeFX extends JFXApp3 {
     private var shadow = 0
     image = new Image(s"file:src/main/scala/mahjong_tiles/tiles-${getNumber(img)}-00.png")
     onMouseClicked = () => {
-      if (curr == img && currTile != this && tilesHandler.checkIfTileIsFree(x_id, y_id, level)) {
+      println(s"$x_id   $y_id    $lvl")
+      if (curr == img && currTile != this && tilesHandler.checkIfTileIsFree(x_id, y_id, lvl)) {
         currTile.image = null
         image = null
         curr = -1
