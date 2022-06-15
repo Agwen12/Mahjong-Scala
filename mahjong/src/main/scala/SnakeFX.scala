@@ -27,10 +27,6 @@ object SnakeFX extends JFXApp3 {
   val tilesHandler = new TilesHandler(36) //34
 
   override def start(): Unit = {
-//
-//    val fileLines = Source.fromFile("mahjong/src/main/scala/Map1.txt").getLines.toList
-//    val arr = fileLines.filterNot(_.isEmpty).map {
-//      line => (line.toList).filter(e => e != ' ') }.toArray
 
     stage = new JFXApp3.PrimaryStage {
       title = "Mahjong"
