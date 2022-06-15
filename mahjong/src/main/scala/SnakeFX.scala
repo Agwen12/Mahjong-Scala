@@ -42,6 +42,26 @@ object SnakeFX extends JFXApp3 {
 
       backGround.setFitWidth(700)
       backGround.setFitHeight(900)
+//      scene = new Scene(700, 900) {
+//        content = List(backGround) ++
+//          pyramid(0,   0) ++
+//          pyramid(0 ,  7) ++
+//          pyramid(4,   7) ++
+//          pyramid(4,   0) ++
+//          pyramid(4.5, 0.5, 2, 2, 1) ++
+//          pyramid(0.5, 0.5, 2, 2, 1, 10) ++
+//          pyramid(0.5, 7.5, 2, 2, 1, 10) ++
+//          pyramid(4.5, 7.5, 2, 2, 1) ++
+//          pyramid(1, 1,1,1,2) ++
+//          pyramid(5, 1,1,1,2) ++
+//          pyramid(1, 8,1,1,2) ++
+//          pyramid(5, 8,1,1,2) ++
+//          List(
+//            tileImage(0, 4.5, tilesHandler.eleganckiPrzypadek(40)),
+//            tileImage(6, 4.5, tilesHandler.eleganckiPrzypadek(40))) ++
+//          stripe()
+//
+//      }
       scene = new Scene(700, 900) {
         content = List(backGround) ++
           pyramid(0,   0) ++
@@ -57,8 +77,8 @@ object SnakeFX extends JFXApp3 {
           pyramid(1, 8,1,1,2) ++
           pyramid(5, 8,1,1,2) ++
           List(
-            tileImage(0, 4.5, tilesHandler.eleganckiPrzypadek(40)),
-            tileImage(6, 4.5, tilesHandler.eleganckiPrzypadek(40))) ++
+            tileImage(0, 4.5, tilesHandler.getRandomTile),
+            tileImage(6, 4.5, tilesHandler.getRandomTile)) ++
           stripe()
 
       }
@@ -68,13 +88,15 @@ object SnakeFX extends JFXApp3 {
   def pyramid(x: Double, y: Double, nx: Int = 3, ny: Int = 3, level:Int = 0, magic: Int = 1): Seq[ImageView] =
     for(i <- 0 until nx;
         j <- 0 until ny)
-    yield tileImage(x + i, y + j, tilesHandler.eleganckiPrzypadek((i*3 + j) + magic), level)
+    yield tileImage(x + i, y + j, tilesHandler.getRandomTile, level)
+//    yield tileImage(x + i, y + j, tilesHandler.eleganckiPrzypadek((i*3 + j) + magic), level)
 
 
   def stripe(): Seq[ImageView] =
     for (i <- 0 until 5;
          j <- 0 until 2)
-    yield tileImage(i+1, 4 + j, tilesHandler.eleganckiPrzypadek(i * 5)) // tilesHandler.getRandomTile
+    yield tileImage(i+1, 4 + j, tilesHandler.getRandomTile) // tilesHandler.getRandomTile
+//    yield tileImage(i+1, 4 + j, tilesHandler.eleganckiPrzypadek(i * 5)) // tilesHandler.getRandomTile
 
 
   def tileImage(xr: Double, yr: Double, img_id: Int, level: Int = 0) = new ImageView {
