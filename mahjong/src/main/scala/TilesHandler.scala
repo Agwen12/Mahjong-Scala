@@ -1,8 +1,7 @@
 import scala.collection.mutable
-import scala.collection.mutable.ArrayBuffer
 
 class TilesHandler(val numberOfTiles: Int) {
-  val typesOfTiles: ArrayBuffer[Int] = getRandomTiles
+  val typesOfTiles: Array[Int] = getRandomTypes
   var tilesUsage: mutable.HashMap[Int, Int] = createInitialHashMap
   var currentlyUsedTiles = 0
 
@@ -11,13 +10,15 @@ class TilesHandler(val numberOfTiles: Int) {
       false
   }
 
-  def getRandomTiles: ArrayBuffer[Int] = {
-    val res = ArrayBuffer[Int]()
+  def getRandomTypes: Array[Int] = {
+    var tempSet = Set[Int]()
     val r = scala.util.Random
 
-    for(_ <- 0 until numberOfTiles + 1) {
-        res.append(r.nextInt(43))
+    while(tempSet.size < numberOfTiles) {
+      tempSet += r.nextInt(42)
     }
+
+    val res = tempSet.toArray
 
     res
   }
@@ -25,7 +26,7 @@ class TilesHandler(val numberOfTiles: Int) {
   def createInitialHashMap: mutable.HashMap[Int, Int] = {
     val res: mutable.HashMap[Int, Int] = mutable.HashMap.empty[Int, Int]
 
-    for(index <- 0 until numberOfTiles + 1) {
+    for(index <- 0 until numberOfTiles) {
       res += (typesOfTiles(index) -> 0)
     }
 
