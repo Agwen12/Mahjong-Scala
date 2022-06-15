@@ -40,21 +40,21 @@ object SnakeFX extends JFXApp3 {
       backGround.setFitHeight(900)
       scene = new Scene(700, 900) {
         content = List(backGround) ++
-          pyramid(xOffset + tileW * 0,   yOffset) ++
-          pyramid(xOffset + tileW * 0 ,  yOffset + tileH * 7) ++
-          pyramid(xOffset + tileW * 4,   yOffset + tileH * 7) ++
-          pyramid(xOffset + tileW * 4,   yOffset) ++
-          pyramid(xOffset + tileW * 4.5, yOffset + tileH / 2, 2, 2, 1) ++
-          pyramid(xOffset + tileW / 2,   yOffset + tileH / 2, 2, 2, 1) ++
-          pyramid(xOffset + tileW / 2,   yOffset + tileH / 2, 2, 2, 1) ++
-          pyramid(xOffset + tileW / 2,   yOffset + tileH * 7.5, 2, 2, 1) ++
-          pyramid(xOffset + tileW * 4.5, yOffset + tileH * 7.5, 2, 2, 1) ++
-          List(tileImage(xOffset + tileW, yOffset + tileH, tilesHandler.getRandomTile),
-            tileImage(xOffset + tileW * 5, yOffset + tileH, tilesHandler.getRandomTile),
-            tileImage(xOffset + tileW * 1, yOffset + tileH * 8, tilesHandler.getRandomTile),
-            tileImage(xOffset + tileW * 5, yOffset + tileH * 8, tilesHandler.getRandomTile),
-            tileImage(xOffset + tileW * 0, yOffset + tileH * 4.5, tilesHandler.getRandomTile),
-            tileImage(xOffset + tileW * 6, yOffset + tileH * 4.5, tilesHandler.getRandomTile)) ++
+          pyramid(0,   0) ++
+          pyramid(0 ,  7) ++
+          pyramid(4,   7) ++
+          pyramid(4,   0) ++
+          pyramid(4.5, 0.5, 2, 2, 1) ++
+          pyramid(0.5, 0.5, 2, 2, 1) ++
+          pyramid(0.5, 0.5, 2, 2, 1) ++
+          pyramid(0.5, 7.5, 2, 2, 1) ++
+          pyramid(4.5, 7.5, 2, 2, 1) ++
+          List(tileImage(1, 1, tilesHandler.getRandomTile),
+            tileImage(5, 1, tilesHandler.getRandomTile),
+            tileImage(1, 8, tilesHandler.getRandomTile),
+            tileImage(5, 8, tilesHandler.getRandomTile),
+            tileImage(0, 4.5, tilesHandler.getRandomTile),
+            tileImage(6, 4.5, tilesHandler.getRandomTile)) ++
           stripe()
 
       }
@@ -64,30 +64,31 @@ object SnakeFX extends JFXApp3 {
   def pyramid(x: Double, y: Double, nx: Int = 3, ny: Int = 3, level:Int = 0): Seq[ImageView] =
     for(i <- 0 until nx;
         j <- 0 until ny)
-    yield tileImage(x + i * tileW, y + j * tileH, tilesHandler.getRandomTile, level)
+    yield tileImage(x + i, y + j, tilesHandler.getRandomTile, level)
 
 
   def stripe(): Seq[ImageView] =
     for (i <- 0 until 5;
          j <- 0 until 2)
-    yield tileImage(xOffset + tileW * (i+1), yOffset + tileH * (4 + j), tilesHandler.getRandomTile)
+    yield tileImage(i+1, 4 + j, tilesHandler.getRandomTile)
 
 
   def tileImage(xr: Double, yr: Double, img_id: Int, level: Int = 0) = new ImageView {
-    x = xr * tileW
-    y = yr * tileH
-    val x_id = xr
-    val y_id = yr
+    x = xr * tileW + xOffset
+    y = yr * tileH + yOffset
+    val x_id: Int = (2 * xr).toInt
+    val y_id: Int = (2 * yr).toInt
     val lvl = level
     val img = img_id
     private var shadow = 0
     image = new Image(s"file:src/main/scala/mahjong_tiles/tiles-${getNumber(img)}-00.png")
     onMouseClicked = () => {
-      if (curr == img && currTile != this) {
+      if (curr == img && currTile != this && tilesHandler.checkIfTileIsFree(x_id, y_id, level)) {
         currTile.image = null
         image = null
         curr = -1
         currTile = null
+        tilesHandler.deleteTile(x_id, y_id, level, img)
       } else {
         shadow = 1 - shadow
         image = new Image(s"file:src/main/scala/mahjong_tiles/tiles-${getNumber(img)}-${switchShadow(shadow)}.png")
